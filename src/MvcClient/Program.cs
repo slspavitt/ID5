@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(options =>
         options.ClaimActions.MapJsonKey("phone_number", "phone_number");
 
 
-        options.Scope.Add("api1");
+        //options.Scope.Add("api1");
         options.Scope.Add("offline_access");
 
 

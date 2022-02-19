@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 using IdentityModel;
 using IdentityModel.Client;
@@ -39,9 +40,18 @@ public class HomeController : Controller
         return SignOut("Cookies", "oidc");
     }
 
+    [HttpGet]
+    [Route("Home/CallApi")]
     public async Task<IActionResult> CallApi()
     {
         var accessToken = await HttpContext.GetTokenAsync("access_token");
+        return await CallApi(accessToken);
+    }
+
+
+    [Route("Home/CallApi/{accessToken}")]
+    public async Task<IActionResult> CallApi(string accessToken)
+    {
 
         var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -51,7 +61,7 @@ public class HomeController : Controller
         var formatted = JsonSerializer.Serialize(parsed, new JsonSerializerOptions { WriteIndented = true });
 
         ViewBag.Json = formatted;
-        return View();
+        return View("CallApi");
     }
 
     [HttpPost]
@@ -59,37 +69,23 @@ public class HomeController : Controller
     [Route("Home/Callback")]
     public async Task<IActionResult> CallbackAsync(string code, string state)
     {
-        var x = HttpContext.Request;
+        var client = new HttpClient();
+        var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
+        var request = new AuthorizationCodeTokenRequest
+        {
+            Address = disco.TokenEndpoint,
+            ClientId = "mvc",
+            ClientSecret = "secret",
+            RedirectUri = "https://localhost:5002/Home/Callback",
+            Code = code,
+            GrantType = OidcConstants.GrantTypes.AuthorizationCode,
+        };
+        var response = await client.RequestAuthorizationCodeTokenAsync(request);
 
-        return View("Index");
+        var userClaims = HttpContext.User.Claims.ToList();
+        userClaims.Add(new Claim("access_token", response.AccessToken));
+
+
+        return await CallApi(response.AccessToken);        
     }
-
-    //public async Task<IActionResult> ReAuthFlow()
-    //{
-    //    var accessToken = await HttpContext.GetTokenAsync("access_token");
-
-    //    var client = new HttpClient();
-    //    var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
-    //    var request = new AuthorizationCodeTokenRequest
-    //    {
-    //        Address = disco.AuthorizeEndpoint,
-    //        ClientId = "mvc",
-    //        ClientSecret = "secret",
-    //        RedirectUri = "https://localhost:5002/Home/Callback",
-    //        Code = "code",
-    //        GrantType = OidcConstants.GrantTypes.AuthorizationCode,
-
-
-    //        Parameters =
-    //            {
-    //                { "scope", "openid api1" },
-    //                { "response_type", "code" },
-    //            },
-    //    };
-
-    //    var response = await client.RequestAuthorizationCodeTokenAsync(request);
-    //    return View("Index");
-
-    //}
-
 }

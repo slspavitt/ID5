@@ -24,6 +24,8 @@ public class HomeController : Controller
         return View();
     }
 
+
+
     public IActionResult Privacy()
     {
         return View();
@@ -81,9 +83,6 @@ public class HomeController : Controller
             GrantType = OidcConstants.GrantTypes.AuthorizationCode,
         };
         var response = await client.RequestAuthorizationCodeTokenAsync(request);
-
-        var userClaims = HttpContext.User.Claims.ToList();
-        userClaims.Add(new Claim("access_token", response.AccessToken));
 
 
         return await CallApi(response.AccessToken);        

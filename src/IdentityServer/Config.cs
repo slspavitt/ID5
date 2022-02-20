@@ -17,7 +17,7 @@ public static class Config
                 UserClaims = new List<string>
                 {
                     JwtClaimTypes.Email,
-                    JwtClaimTypes.EmailVerified
+                    JwtClaimTypes.EmailVerified,
                 }
             },
             new IdentityResource()
@@ -27,7 +27,8 @@ public static class Config
                 {
                     JwtClaimTypes.PhoneNumber,
                 }
-            }
+            },
+
 
         };
 
@@ -54,7 +55,9 @@ public static class Config
             },
 
             // scopes that client has access to
-            AllowedScopes = { "api1" }
+            AllowedScopes = { "api1" },
+            RequireConsent = true,
+            AllowRememberConsent = false,
         },
         new Client
         {
@@ -81,6 +84,9 @@ public static class Config
             AllowOfflineAccess = true,
             AlwaysIncludeUserClaimsInIdToken = true,
             AllowAccessTokensViaBrowser = false,
+
+            RequireConsent = true,
+            AllowRememberConsent = false,
 
         }
     };

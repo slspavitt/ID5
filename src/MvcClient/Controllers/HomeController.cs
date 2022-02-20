@@ -6,6 +6,7 @@ using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using MvcClient.Managers;
 using MvcClient.Models;
 
 namespace MvcClient.Controllers;
@@ -13,10 +14,16 @@ namespace MvcClient.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IConnectToLocker _connectToLocker;
+    private readonly IConnectToAPI _connectToAPI;
+    private readonly IConnectToAuth _connectToAuth;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IConnectToLocker connectToLocker, IConnectToAPI connectToAPI, IConnectToAuth connectToAuth)
     {
         _logger = logger;
+        _connectToAPI = connectToAPI;
+        _connectToLocker = connectToLocker;
+        _connectToAuth = connectToAuth;
     }
 
     public IActionResult Index()
@@ -54,15 +61,7 @@ public class HomeController : Controller
     [Route("Home/CallApi/{accessToken}")]
     public async Task<IActionResult> CallApi(string accessToken)
     {
-
-        var client = new HttpClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        var content = await client.GetStringAsync("https://localhost:6001/identity");
-
-        var parsed = JsonDocument.Parse(content);
-        var formatted = JsonSerializer.Serialize(parsed, new JsonSerializerOptions { WriteIndented = true });
-
-        ViewBag.Json = formatted;
+        ViewBag.Json = await _connectToAPI.Connect(accessToken);
         return View("CallApi");
     }
 
@@ -79,18 +78,9 @@ public class HomeController : Controller
     [Route("Home/CallLocker/{accessToken}")]
     public async Task<IActionResult> CallLocker(string accessToken)
     {
-
-        var client = new HttpClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        var content = await client.GetStringAsync("https://localhost:6003/passport");
-
-        var parsed = JsonDocument.Parse(content);
-        var formatted = JsonSerializer.Serialize(parsed, new JsonSerializerOptions { WriteIndented = true });
-
-        ViewBag.Json = formatted;
+        ViewBag.Json = await _connectToLocker.Connect(accessToken);
         return View("CallApi");
     }
-    //
 
     [HttpGet]
     [Route("Home/ReAuthForAPI")]
@@ -113,19 +103,9 @@ public class HomeController : Controller
     [Route("Home/Callback")]
     public async Task<IActionResult> CallbackAsync(string code, string state)
     {
-        var client = new HttpClient();
-        var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
-        var request = new AuthorizationCodeTokenRequest
-        {
-            Address = disco.TokenEndpoint,
-            ClientId = "mvc",
-            ClientSecret = "secret",
-            RedirectUri = "https://localhost:5002/Home/Callback",
-            Code = code,
-            GrantType = OidcConstants.GrantTypes.AuthorizationCode,
-        };
-        var response = await client.RequestAuthorizationCodeTokenAsync(request);
+        var response = await _connectToAuth.RequestTokenForREAuth(code);
 
+        // This is a bit messy 
         if (response.Scope.Contains("api"))
         {
             return await CallApi(response.AccessToken);

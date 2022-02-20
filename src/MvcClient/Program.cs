@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using MvcClient.Managers;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,12 @@ builder.Services.AddAuthentication(options =>
         options.GetClaimsFromUserInfoEndpoint = true;
         options.SaveTokens = true;
     });
+
+
+builder.Services.AddTransient<IHttpAuthorisedConnector, HttpAuthorisedConnector>();
+builder.Services.AddTransient<IConnectToLocker, ConnectToLocker>();
+builder.Services.AddTransient<IConnectToAPI, ConnectToAPI>();
+builder.Services.AddTransient<IConnectToAuth, ConnectToAuth>();
 
 var app = builder.Build();
 

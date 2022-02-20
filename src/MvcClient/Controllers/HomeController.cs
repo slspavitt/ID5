@@ -66,6 +66,14 @@ public class HomeController : Controller
         return View("CallApi");
     }
 
+    [HttpGet]
+    [Route("Home/ReAuth")]
+
+    public ActionResult ReAuth()
+    {
+        return new RedirectResult("https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope=openid%20api1");
+    }
+
     [HttpPost]
     [HttpGet]
     [Route("Home/Callback")]

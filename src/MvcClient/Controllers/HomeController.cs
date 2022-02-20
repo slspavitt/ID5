@@ -66,12 +66,46 @@ public class HomeController : Controller
         return View("CallApi");
     }
 
+    //
     [HttpGet]
-    [Route("Home/ReAuth")]
+    [Route("Home/CallLocker")]
+    public async Task<IActionResult> CallLocker()
+    {
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        return await CallLocker(accessToken);
+    }
 
-    public ActionResult ReAuth()
+
+    [Route("Home/CallLocker/{accessToken}")]
+    public async Task<IActionResult> CallLocker(string accessToken)
+    {
+
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var content = await client.GetStringAsync("https://localhost:6003/passport");
+
+        var parsed = JsonDocument.Parse(content);
+        var formatted = JsonSerializer.Serialize(parsed, new JsonSerializerOptions { WriteIndented = true });
+
+        ViewBag.Json = formatted;
+        return View("CallApi");
+    }
+    //
+
+    [HttpGet]
+    [Route("Home/ReAuthForAPI")]
+
+    public ActionResult ReAuthForAPi()
     {
         return new RedirectResult("https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope=openid%20api1");
+    }
+
+    [HttpGet]
+    [Route("Home/ReAuthForLocker")]
+
+    public ActionResult ReAuthForLocker()
+    {
+        return new RedirectResult("https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope=openid%20passport");
     }
 
     [HttpPost]
@@ -92,7 +126,10 @@ public class HomeController : Controller
         };
         var response = await client.RequestAuthorizationCodeTokenAsync(request);
 
-
-        return await CallApi(response.AccessToken);        
+        if (response.Scope.Contains("api"))
+        {
+            return await CallApi(response.AccessToken);
+        }
+        return await CallLocker(response.AccessToken);
     }
 }

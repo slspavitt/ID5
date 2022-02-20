@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcClient", "src\MvcClient\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "src\IdentityServer\IdentityServer.csproj", "{97B10A55-6660-4008-A0A6-198CDD13CBEA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Locker", "src\Locker\Locker.csproj", "{C1F9DB44-9897-43EB-BDFE-C738457E38D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{97B10A55-6660-4008-A0A6-198CDD13CBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B10A55-6660-4008-A0A6-198CDD13CBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B10A55-6660-4008-A0A6-198CDD13CBEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1F9DB44-9897-43EB-BDFE-C738457E38D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1F9DB44-9897-43EB-BDFE-C738457E38D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1F9DB44-9897-43EB-BDFE-C738457E38D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1F9DB44-9897-43EB-BDFE-C738457E38D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{B9122F32-4399-4AAF-AE5D-2804D2C4251C} = {3598F2CF-EA7B-4044-A29E-AF1CA2F8E6B5}
 		{90BF9965-A5DF-4B7D-B239-AF7AB9376D0D} = {3598F2CF-EA7B-4044-A29E-AF1CA2F8E6B5}
 		{97B10A55-6660-4008-A0A6-198CDD13CBEA} = {3598F2CF-EA7B-4044-A29E-AF1CA2F8E6B5}
+		{C1F9DB44-9897-43EB-BDFE-C738457E38D6} = {3598F2CF-EA7B-4044-A29E-AF1CA2F8E6B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D064390-3F53-48D5-8068-82731F722116}

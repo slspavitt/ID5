@@ -28,6 +28,15 @@ public static class Config
                     JwtClaimTypes.PhoneNumber,
                 }
             },
+            new IdentityResource()
+            {
+                Name = "passport",
+                UserClaims = new List<string>
+                {
+                    "passport_number",
+                    "pasport_issuer"
+                }
+            },
 
 
         };
@@ -61,6 +70,24 @@ public static class Config
         },
         new Client
         {
+            ClientId = "locker",
+
+            // no interactive user, use the clientid/secret for authentication
+            AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+            // secret for authentication
+            ClientSecrets =
+            {
+                new Secret("secret".Sha256())
+            },
+
+            // scopes that client has access to
+            AllowedScopes = { "passport" },
+            RequireConsent = true,
+            AllowRememberConsent = false,
+        },
+        new Client
+        {
             ClientId = "mvc",
             ClientSecrets = { new Secret("secret".Sha256()) },
 
@@ -78,7 +105,8 @@ public static class Config
                 IdentityServerConstants.StandardScopes.Profile,
                 "api1",
                 "verification",
-                "phone"
+                "phone",
+                "passport"
             },
             RequirePkce = false,
             AllowOfflineAccess = true,

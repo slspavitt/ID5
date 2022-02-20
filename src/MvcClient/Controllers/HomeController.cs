@@ -82,20 +82,13 @@ public class HomeController : Controller
         return View("CallApi");
     }
 
+  
     [HttpGet]
-    [Route("Home/ReAuthForAPI")]
+    [Route("Home/ReAuth")]
 
-    public ActionResult ReAuthForAPi()
+    public ActionResult ReAuth(string scope)
     {
-        return new RedirectResult("https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope=openid%20api1");
-    }
-
-    [HttpGet]
-    [Route("Home/ReAuthForLocker")]
-
-    public ActionResult ReAuthForLocker()
-    {
-        return new RedirectResult("https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope=openid%20passport");
+        return new RedirectResult($"https://localhost:5001/connect/authorize?client_id=mvc&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A5002%2FHome%2FCallback&scope={scope}");
     }
 
     [HttpPost]

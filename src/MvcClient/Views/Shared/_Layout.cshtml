@@ -26,10 +26,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReAuthForAPI">Call API (with Auth)</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReAuth" asp-route-scope="openid api1" >Call API (with Auth)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReAuthForLocker">Call Locker (with Auth)</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ReAuth" asp-route-scope="openid passport">Call Locker (with Auth)</a>
                         </li>
                         <li class="nav-item right">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Sign Out</a>
